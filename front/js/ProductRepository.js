@@ -7,9 +7,10 @@ export class ProductRepository {
 
 static async list() {
     try{
-        const response = await fetch(`${ProductRepository.#backendUrl}${id}`);
+        const response = await fetch(`${ProductRepository.#backendUrl}`);
         return response.json();
     } catch(error){
+        console.log(error)
         throw new Error('Connexion au serveur impossible !')
     }
 }
@@ -19,6 +20,7 @@ static async searchById(id) {
         const res = await fetch(`${ProductRepository.#backendUrl}${id}`)
         return  res.json()
     } catch(error){
+        console.log(error)
         throw new Error("Connection au serveur impossible !")
     }
 }

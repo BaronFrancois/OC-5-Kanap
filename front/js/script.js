@@ -1,54 +1,36 @@
-import { ProductRepository } from "./ProductRepository";
-// let row;
-// let id;
-// let elt;
-// let itemsListHtml = document.getElementById('items');
+// Étape 1 : Récupérer les données du serveur à l'URL donnée
+fetch('http://localhost:3000/api/products/')
+    // Étape 2 : Convertir la réponse brute en format JSON
+    .then(res => res.json())
+    // Étape 3 : Traiter les données JSON
+    .then(data => {
+        // Affichage des données dans la console à des fins de débogage
+        console.log(data);
 
+        // Étape 4 : Récupérer une référence à l'élément HTML où les articles seront affichés
+        let itemsContainer = document.getElementById('items');
 
-// retrieveItems().catch(function(err) {
-//     console.log(err)
-// });
+        // Étape 5 : Initialiser une chaîne HTML vide pour construire le contenu
+        let html = '';
 
-// // * Récupère les produits depuis l'API
-// async function retrieveItems() {
-//     const response = await fetch('http://localhost:3000/api/products/');
-//     const itemsList = await response.json();
+        // Étape 6 : Parcourir le tableau de données qui contient les produits
+        for (let i = 0; i < data.length; i++) {
+            // Ajouter le HTML pour chaque produit, y compris l'image, le nom et la description
+            html += `
+                <a href="./product.html?id=${data[i]._id}">
+                    <article>
+                        <img src="${data[i].imageUrl}" alt="${data[i].altTxt}"> // Image du produit
+                        <h3>${data[i].name}</h3> // Nom du produit
+                        <p>${data[i].description}</p> // Description du produit
+                    </article>
+                </a>`;
+        }
 
-//     // On crée la liste de produits en utilisant forEach
-//     itemsList.forEach(function(product) {
-//         let newCard = document.createElement("a");
-//         newCard.setAttribute("href", `./product.html?id=${product._id}`);
-//         newCard.innerHTML = 
-//         `<article>
-//             <img src="${product.imageUrl}" alt="${product.altTxt}">
-//             <h3 class='productName'>${product.name}</h3>
-//             <p class='productDescription'>${product.description}</p>
-//         </article>`;
-//         itemsListHtml.appendChild(newCard);
-//     })
+        // Étape 7 : Insérer le HTML concaténé dans l'élément conteneur
+        itemsContainer.innerHTML = html;
 
-// }
-loadItems().then(()=>{
-  console.log("executed")
-}).catch(function(err) {
-    console.log(err)
-});
-
-// * Récupère les produits depuis l'API
-async function loadItems() {
-  const itemList = await ProductRepository.list()
-    // On crée la liste de produits en utilisant forEach
-    let itemsListHtml = document.getElementById('items');
-    itemsList.forEach(function(product) {
-        let newCard = document.createElement("a");
-        newCard.setAttribute("href", `./product.html?id=${product._id}`);
-        newCard.innerHTML = 
-        `<article>
-            <img src="${product.imageUrl}" alt="${product.altTxt}">
-            <h3 class='productName'>${product.name}</h3>
-            <p class='productDescription'>${product.description}</p>
-        </article>`;
-        itemsListHtml.appendChild(newCard);
     })
-
-}
+    .catch(function(err) {
+        // Étape 8 : Enregistrement des erreurs qui se produisent lors de la récupération
+        console.log(err);
+    });
