@@ -19,9 +19,9 @@ fetch('http://localhost:3000/api/products/')
             html += `
                 <a href="./product.html?id=${data[i]._id}">
                     <article>
-                        <img src="${data[i].imageUrl}" alt="${data[i].altTxt}"> // Image du produit
-                        <h3>${data[i].name}</h3> // Nom du produit
-                        <p>${data[i].description}</p> // Description du produit
+                        <img src="${data[i].imageUrl}" alt="${data[i].altTxt}"> 
+                        <h3>${data[i].name}</h3> 
+                        <p>${data[i].description}</p>
                     </article>
                 </a>`;
         }

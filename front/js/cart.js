@@ -6,12 +6,14 @@ let itemsContainer = document.querySelector('#cart__items');
 function calculateTotals(){
   const totalPriceEl = document.querySelector('#totalPrice');
   const totalQuantityEl = document.querySelector('#totalQuantity');
+
   let priceTotal = 0;
   let quantityTotal = 0;
   cartData.forEach((element) => {
     priceTotal += element.price * parseInt(element.quantity); // Calculer le prix total
     quantityTotal += element.quantity; // Calculer la quantité totale
   });
+
   totalPriceEl.innerText = priceTotal; // Afficher le prix total
   totalQuantityEl.innerText = quantityTotal; // Afficher la quantité totale
 }
@@ -23,6 +25,7 @@ function bubbleUp(element) {
 	// On vérifie d'abord si l'élément actuel a un attribut "id".
 	if (element.id) {
 	  // Si c'est le cas, on retourne cet élément car c'est celui que nous cherchons.
+	  console.log(element)
 	  return element;
 	} else {
 	  // Si l'élément actuel n'a pas d'attribut "id", alors on appelle la même fonction "bubbleUp" de manière récursive (c'est-à-dire qu'elle s'appelle elle-même),
@@ -87,6 +90,29 @@ function renderCart() {
   let html = '';
   for (let i = 0; i < cartData.length; i++) {
     // Code pour créer l'HTML de chaque article dans le panier
+	html += `
+      <article class="cart__item" data-id="${cartData[i]._id}" data-color="${cartData[i].color}">
+        <div class="cart__item__img">
+          <img src="${cartData[i].imageUrl}" alt="${cartData[i].altTxt}">
+        </div>
+        <div class="cart__item__content">
+          <div class="cart__item__content__description">
+            <h2>${cartData[i].name}</h2>
+            <p>${cartData[i].color}</p>
+            <p>${cartData[i].price} €</p>
+          </div>
+          <div class="cart__item__content__settings">
+            <div class="cart__item__content__settings__quantity">
+              <p>Qté: ${cartData[i].quantity} </p>
+              <input id = "input-${i}" oninput = "updateQuantity(event)" type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${cartData[i].quantity}">
+            </div>
+            <div onclick = "deleteItem(event)" id = "delete-${i}" class="cart__item__content__settings__delete">
+              <p class="deleteItem">Supprimer</p>
+            </div>
+          </div>
+        </div>
+      </article>
+    `;
   }
   itemsContainer.innerHTML = html; // Insérer le HTML dans la page
   calculateTotals(); // Calculer les totaux chaque fois que le panier est affiché
@@ -95,23 +121,34 @@ function renderCart() {
 // Appeler la fonction renderCart au chargement de la page
 renderCart();
 
+// Étape 6: Filtrer les caractères spéciaux dans un champ de texte
+function checkSpecialCharacters(event) {
+	let input = event.target.value;
+	let regex = /^[a-zA-Z\s]*$/; // Autorise seulement les lettres et les espaces
+  
+	if (!regex.test(input)) {
+	  document.getElementById('error-message').textContent = "Veuillez n'utiliser que des lettres et des espaces.";
+	} else {
+	  document.getElementById('error-message').textContent = '';
+	}
+  }
 // Étape 6: Filtrer les chiffres dans un champ de texte
-function filterNumbers(event) {
-  let input = event.target.value;
-  let nonNumericText = input.replace(/[0-9]/g, ''); // Remplacer tous les chiffres par une chaîne vide
-  event.target.value = nonNumericText; // Mettre à jour la valeur de l'input
-}
+// function filterNumbers(event) {
+//   let input = event.target.value;
+//   let nonNumericText = input.replace(/[0-9]/g, ''); // Remplacer tous les chiffres par une chaîne vide
+//   event.target.value = nonNumericText; // Mettre à jour la valeur de l'input
+// }
 
 // Étape 7: Initialiser les écouteurs d'événements pour les champs de texte
 function initializeEventListeners() {
   let firstNameInput = document.getElementById('firstName');
   let lastNameInput = document.getElementById('lastName');
   let cityInput = document.getElementById('city');
+
   let arr = [firstNameInput, lastNameInput, cityInput];
+
   arr.forEach((element) => {
-    element.addEventListener('input', (event) => {
-      filterNumbers(event); // Appliquer le filtre à chaque événement d'entrée
-    });
+    element.addEventListener('input', checkSpecialCharacters); // Appliquer le filtre à chaque événement d'entrée
   });
 }
 initializeEventListeners();
@@ -121,6 +158,59 @@ function buildCustomerData(event) {
   event.preventDefault();
   // Construire les données du client ici
   // Envoyer une requête à l'API ici
+  
+  let ids = ["firstName", "lastName", "address", "city", "email"];
+  let customerData = {
+    contact:{
+
+    },
+    products: []
+  
+  };
+
+  for (let id of ids) {
+    customerData.contact[id] = document.querySelector("#" + id).value;
+  }
+
+  for(let i = 0; i < cartData.length; i++){
+    customerData.products.push(cartData[i]._id)
+  }
+
+  console.log(customerData)
+  // fetch(`http://localhost:3000/api/products/`)
+  // Convertir l'objet en une chaîne JSON pour le stockage local
+  let customerDataJSON = JSON.stringify(customerData);
+  
+  // Stocker les données dans le stockage local
+  localStorage.setItem('customerData', customerDataJSON);
+
+
+const apiUrl = 'http://localhost:3000/api/products/order';
+
+const requestOptions = {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json' 
+  },
+  body: JSON.stringify(customerData)
+};
+
+
+ fetch(apiUrl, requestOptions)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log('Response data:', data);
+    localStorage.setItem("orderId", JSON.stringify(data.orderId))
+    window.location.href = 'confirmation.html'
+  })
+  .catch(error => {
+    console.error('Fetch error:', error);
+  });
 }
 
 // Ajouter un écouteur d'événements au formulaire pour gérer la soumission
