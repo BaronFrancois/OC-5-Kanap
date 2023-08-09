@@ -125,11 +125,13 @@ renderCart();
 function checkSpecialCharacters(event) {
 	let input = event.target.value;
 	let regex = /^[a-zA-Z\s]*$/; // Autorise seulement les lettres et les espaces
+	let errorMessageElementId = event.target.id + 'ErrorMsg'; // Construire l'ID de l'élément de message d'erreur
+	let errorMessageElement = document.getElementById(errorMessageElementId);
   
 	if (!regex.test(input)) {
-	  document.getElementById('error-message').textContent = "Veuillez n'utiliser que des lettres et des espaces.";
+	  errorMessageElement.textContent = "Veuillez n'utiliser que des lettres et des espaces.";
 	} else {
-	  document.getElementById('error-message').textContent = '';
+	  errorMessageElement.textContent = '';
 	}
   }
 // Étape 6: Filtrer les chiffres dans un champ de texte
