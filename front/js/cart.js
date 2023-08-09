@@ -123,14 +123,24 @@ renderCart();
 
 // Étape 6: Filtrer les caractères spéciaux dans un champ de texte
 function checkSpecialCharacters(event) {
+	// Récupération de la valeur de l'élément d'entrée qui a déclenché l'événement
 	let input = event.target.value;
+	// Définition d'une expression régulière qui correspond uniquement aux lettres et aux espaces
+    // ^ signifie que la correspondance doit commencer au début de la chaîne
+    // [a-zA-Z\s] correspond à toutes les lettres majuscules et minuscules et aux espaces
+    // * signifie que l'expression précédente peut se répéter zéro ou plusieurs fois
+    // $ signifie que la correspondance doit se terminer à la fin de la chaîne
 	let regex = /^[a-zA-Z\s]*$/; // Autorise seulement les lettres et les espaces
 	let errorMessageElementId = event.target.id + 'ErrorMsg'; // Construire l'ID de l'élément de message d'erreur
 	let errorMessageElement = document.getElementById(errorMessageElementId);
   
 	if (!regex.test(input)) {
+	// Vérification si la valeur de l'entrée ne correspond pas à l'expression régulière	
+	   test(string: string): boolean;
+	// Si la valeur ne correspond pas, définir le contenu textuel de l'élément de message d'erreur
 	  errorMessageElement.textContent = "Veuillez n'utiliser que des lettres et des espaces.";
 	} else {
+	    // Si la valeur correspond, effacer le contenu textuel de l'élément de message d'erreur
 	  errorMessageElement.textContent = '';
 	}
   }
