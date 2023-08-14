@@ -31,6 +31,7 @@ fetch(`http://localhost:3000/api/products/${objectId}`)
         
         imageContainer.innerHTML = `<img src="${data.imageUrl}" alt="${data.altTxt}">`
         titleElement.innerText = data.name
+        document.title = data.name
         priceElement.innerHTML = data.price
         descriptionElement.innerText = data.description
         for (let colors of colorOptions) {
