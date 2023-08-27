@@ -68,7 +68,7 @@ fetch(`http://localhost:3000/api/products/${objectId}`)
          // Récupérer le panier à partir du stockage local ou utiliser un tableau vide si le panier n'existe pas
         let cart = JSON.parse(localStorage.getItem('cart')) || []
     
-        // Rechercher l'article dans le panier, s'il y est
+        // Rechercher l'article dans le panier, s'il y est il est stocké dans la variable itemInCart
         let itemInCart = cart.find(item => item.id === itemData.id)
     
         // Si l'article est dans le panier, afficher la quantité ; sinon, la quantité est 0

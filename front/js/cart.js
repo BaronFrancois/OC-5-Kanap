@@ -135,8 +135,6 @@ function checkSpecialCharacters(event) {
 	let errorMessageElement = document.getElementById(errorMessageElementId);
   
 	if (!regex.test(input)) {
-	// Vérification si la valeur de l'entrée ne correspond pas à l'expression régulière	
-	   test(string: string): boolean;
 	// Si la valeur ne correspond pas, définir le contenu textuel de l'élément de message d'erreur
 	  errorMessageElement.textContent = "Veuillez n'utiliser que des lettres et des espaces.";
 	} else {
@@ -189,25 +187,33 @@ function buildCustomerData(event) {
   }
 
   console.log(customerData)
-  // fetch(`http://localhost:3000/api/products/`)
+
   // Convertir l'objet en une chaîne JSON pour le stockage local
   let customerDataJSON = JSON.stringify(customerData);
   
   // Stocker les données dans le stockage local
   localStorage.setItem('customerData', customerDataJSON);
 
-
+// Définir l'URL de l'API à laquelle la requête sera envoyée
 const apiUrl = 'http://localhost:3000/api/products/order';
 
+// Configurer les options pour la requête fetch
 const requestOptions = {
+  // Méthode HTTP à utiliser (ici POST)
   method: 'POST',
+  // Type de contenu envoyé
   headers: {
     'Content-Type': 'application/json' 
   },
+  // Convertir les données du client en JSON et les inclure dans le corps de la requête
   body: JSON.stringify(customerData)
 };
 
-
+// Exécuter la requête fetch
+  // Une fois la requête terminée, récupérer la réponse
+    // Vérifier si la réponse est OK (statut HTTP 200-299)
+      // Si ce n'est pas le cas, rejeter la promesse et afficher une erreur 
+        // Sinon, convertir la réponse en JSON
  fetch(apiUrl, requestOptions)
   .then(response => {
     if (!response.ok) {
@@ -215,6 +221,9 @@ const requestOptions = {
     }
     return response.json();
   })
+  // Une fois la conversion en JSON terminée, récupérer les données
+    // Sauvegarder l'ID de commande dans le stockage local
+      // Rediriger l'utilisateur vers la page de confirmation
   .then(data => {
     console.log('Response data:', data);
     localStorage.setItem("orderId", JSON.stringify(data.orderId))
