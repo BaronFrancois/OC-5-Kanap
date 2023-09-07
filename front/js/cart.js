@@ -142,7 +142,7 @@ function checkSpecialCharacters(event) {
 	  errorMessageElement.textContent = '';
 	}
   }
-// Étape 6: Filtrer les chiffres dans un champ de texte
+// (ne correspond pas à ce qui est attendu)Étape 6 bis: Filtrer les chiffres dans un champ de texte
 // function filterNumbers(event) {
 //   let input = event.target.value;
 //   let nonNumericText = input.replace(/[0-9]/g, ''); // Remplacer tous les chiffres par une chaîne vide
