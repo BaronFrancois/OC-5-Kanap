@@ -8,6 +8,7 @@ let url = new URL(location.href)
 let objectId = url.searchParams.get('id')
 let itemData = {}
 
+
 // 2. Récupérer le bouton et configurer un écouteur d'événement au clic
 let button = document.getElementById("addToCart")
 button.addEventListener('click', addToCart)
@@ -57,13 +58,22 @@ fetch(`http://localhost:3000/api/products/${objectId}`)
         if(itemInCart){
             itemInCart.quantity += quantity
         }else{
-            cart.push({ ...itemData, quantity, color})
+            const { _id, imageUrl, name} = itemData
+            cart.push({ quantity, color, _id, imageUrl, name})
         }
         
         // Sauvegarder le panier mis à jour dans le stockage local
+        cart.forEach((item) => {
+            if (item.quantity < 0) {
+                // Reset the quantity to 1
+                item.quantity = 1;
+                // Show an error message
+                alert("La quantité ne peut pas être négative.");
+            }
+        });
         localStorage.setItem('cart', JSON.stringify(cart))
         console.log(cart)
-    }
+        }
     function displayQuantity() {
          // Récupérer le panier à partir du stockage local ou utiliser un tableau vide si le panier n'existe pas
         let cart = JSON.parse(localStorage.getItem('cart')) || []

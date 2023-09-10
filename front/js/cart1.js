@@ -166,12 +166,6 @@ initializeEventListeners();
 // Étape 8: Construire les données du client et les envoyer à l'API
 function buildCustomerData(event) {
   event.preventDefault();
-  // Prevent empty cart validation
-  if (cartData.length === 0) {
-    alert("Le panier est vide. Vous ne pouvez pas passer de commande.");
-    return;
-  }
-
   // Construire les données du client ici
   // Envoyer une requête à l'API ici
   
@@ -232,10 +226,9 @@ const requestOptions = {
       // Rediriger l'utilisateur vers la page de confirmation
   .then(data => {
     console.log('Response data:', data);
-    // ne doit pas être dans le LS transfere avec
-    // localStorage.setItem("orderId", JSON.stringify(data.orderId))
-    const orderId = data.orderId;
-    window.location.href = `confirmation.html?orderId=${orderId}`
+    // ne doit pas être dans le LS
+    localStorage.setItem("orderId", JSON.stringify(data.orderId))
+    window.location.href = 'confirmation.html'
   })
   .catch(error => {
     console.error('Fetch error:', error);
@@ -244,4 +237,3 @@ const requestOptions = {
 
 // Ajouter un écouteur d'événements au formulaire pour gérer la soumission
 document.querySelector(".cart__order__form").addEventListener('submit', buildCustomerData);
-
