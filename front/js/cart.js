@@ -4,29 +4,32 @@ let itemsContainer = document.querySelector('#cart__items');
 // Ajout Post soutenance pour avoir le prix dans le scope globale
 let productPrices = {};
 
-async function fetchAllProducts() {
-  const response = await fetch('http://localhost:3000/api/products');
-  allProducts = await response.json();
-  allProducts.forEach(product => {
-    productPrices[product._id] = product.price;
-  });
-}
-
 // Étape 2: Fonction pour calculer les totaux de prix et de quantité
-function calculateTotals(){
+async function calculateTotals(){
+  let totalPrice = 0;
+  let totalQuantity = 0;
+
+  for (const item of cartData) {
+    const product = allProducts.find(p => p._id === item._id);  // Assuming each item has an 'id' property
+    const quantity = item.quantity;  // Assuming each item has a 'quantity' property
+
+    // Étape 2.1: Faire un appel à l'API pour obtenir le prix du produit
+    const response = await fetch(`http://localhost:3000/api/products/${product._id}`)
+    const productData = await response.json();
+    const price = productData.price;
+
+
+    // Étape 2.2: Calculer le total pour chaque produit
+    const itemTotal = price * quantity;
+    totalPrice += itemTotal;
+    totalQuantity += quantity;
+  }
+
+  // Étape 2.3: Afficher le total
   const totalPriceEl = document.querySelector('#totalPrice');
   const totalQuantityEl = document.querySelector('#totalQuantity');
-
-  let priceTotal = 0;
-  let quantityTotal = 0;
-  cartData.forEach((element) => {
-     const price = productPrices[element._id] || 0;
-    priceTotal += price * parseInt(element.quantity); // Calculer le prix total
-    quantityTotal += element.quantity; // Calculer la quantité totale
-  });
-
-  totalPriceEl.innerText = priceTotal; // Afficher le prix total
-  totalQuantityEl.innerText = quantityTotal; // Afficher la quantité totale
+  totalPriceEl.innerText = totalPrice;
+  totalQuantityEl.innerText = totalQuantity;
 }
 
 // Cette fonction est appelée "bubbleUp". Son objectif est de remonter dans la hiérarchie des éléments HTML jusqu'à trouver un élément qui possède un attribut "id". 
@@ -104,7 +107,7 @@ async function fetchAllProducts() {
   allProducts = await response.json();
 }
 
-async function renderCart() {
+async function renderCart(price) {
   await fetchAllProducts(); // Fetch all products
   
   let html = '';

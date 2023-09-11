@@ -72,6 +72,7 @@ fetch(`http://localhost:3000/api/products/${objectId}`)
             }
         });
         localStorage.setItem('cart', JSON.stringify(cart))
+        alert("Le canapé a bien été ajouté au panier !");
         console.log(cart)
         }
     function displayQuantity() {
