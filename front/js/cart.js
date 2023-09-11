@@ -1,8 +1,7 @@
 // Étape 1: Récupérer les données du panier depuis le stockage local
 let cartData = JSON.parse(localStorage.getItem("cart")) || [];
 let itemsContainer = document.querySelector('#cart__items');
-// Ajout Post soutenance pour avoir le prix dans le scope globale
-let productPrices = {};
+
 
 // Étape 2: Fonction pour calculer les totaux de prix et de quantité
 async function calculateTotals(){
@@ -107,8 +106,8 @@ async function fetchAllProducts() {
   allProducts = await response.json();
 }
 
-async function renderCart(price) {
-  await fetchAllProducts(); // Fetch all products
+async function renderCart() {
+  await fetchAllProducts(); // Fetch tous les produits pour récupérer principalement le prix
   
   let html = '';
   for (let i = 0; i < cartData.length; i++) {
@@ -195,7 +194,7 @@ initializeEventListeners();
 // Étape 8: Construire les données du client et les envoyer à l'API
 function buildCustomerData(event) {
   event.preventDefault();
-  // Prevent empty cart validation
+  // On évite la validation d'un panier vide
   if (cartData.length === 0) {
     alert("Le panier est vide. Vous ne pouvez pas passer de commande.");
     return;

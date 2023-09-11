@@ -65,9 +65,9 @@ fetch(`http://localhost:3000/api/products/${objectId}`)
         // Sauvegarder le panier mis à jour dans le stockage local
         cart.forEach((item) => {
             if (item.quantity < 0) {
-                // Reset the quantity to 1
+                // On remet la quantité à 1 si elle est négative
                 item.quantity = 1;
-                // Show an error message
+                // message d'erreur
                 alert("La quantité ne peut pas être négative.");
             }
         });

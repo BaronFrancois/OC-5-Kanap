@@ -7,17 +7,17 @@
 //     // Affichage de l'ID de commande dans l'élément HTML
 //     spanOrder.innerText = order;
 //   }
-  // This function retrieves the orderId from URL parameters
+  // Retrouver le OrderId mis dans l'Url
 function getOrderIdFromUrl() {
   const urlParams = new URLSearchParams(window.location.search);
   const orderId = urlParams.get('orderId');
   return orderId;
 }
 
-// Use the function to get the orderId
+// On vient à le récupérer pour ensuite l'afficher
 const orderId = getOrderIdFromUrl();
 
-// Display the orderId where you need it
+// Puis on vient à l'afficher
 let spanOrder = document.querySelector('#orderId');
 spanOrder.innerText = orderId;
   // Appel de la fonction pour afficher l'ID de commande
