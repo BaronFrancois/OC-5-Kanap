@@ -264,6 +264,7 @@ const requestOptions = {
     // localStorage.setItem("orderId", JSON.stringify(data.orderId))
     const orderId = data.orderId;
     window.location.href = `confirmation.html?orderId=${orderId}`
+    localStorage.clear(data);
   })
   .catch(error => {
     console.error('Fetch error:', error);
