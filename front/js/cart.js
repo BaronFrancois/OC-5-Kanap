@@ -1,6 +1,16 @@
 // Étape 1: Récupérer les données du panier depuis le stockage local
 let cartData = JSON.parse(localStorage.getItem("cart")) || [];
 let itemsContainer = document.querySelector('#cart__items');
+// Ajout Post soutenance pour avoir le prix dans le scope globale
+let productPrices = {};
+
+async function fetchAllProducts() {
+  const response = await fetch('http://localhost:3000/api/products');
+  allProducts = await response.json();
+  allProducts.forEach(product => {
+    productPrices[product._id] = product.price;
+  });
+}
 
 // Étape 2: Fonction pour calculer les totaux de prix et de quantité
 function calculateTotals(){
@@ -10,7 +20,8 @@ function calculateTotals(){
   let priceTotal = 0;
   let quantityTotal = 0;
   cartData.forEach((element) => {
-    priceTotal += element.price * parseInt(element.quantity); // Calculer le prix total
+     const price = productPrices[element._id] || 0;
+    priceTotal += price * parseInt(element.quantity); // Calculer le prix total
     quantityTotal += element.quantity; // Calculer la quantité totale
   });
 
@@ -86,11 +97,23 @@ function updateQuantity(e) {
   
 
 // Étape 5: Fonction pour afficher les articles dans le panier
-function renderCart() {
+let allProducts = [];
+
+async function fetchAllProducts() {
+  const response = await fetch('http://localhost:3000/api/products');
+  allProducts = await response.json();
+}
+
+async function renderCart() {
+  await fetchAllProducts(); // Fetch all products
+  
   let html = '';
   for (let i = 0; i < cartData.length; i++) {
-    // Code pour créer l'HTML de chaque article dans le panier
-	html += `
+    const product = allProducts.find(p => p._id === cartData[i]._id);
+    if (product) {
+      const price = product.price;
+      // Utilisez le prix pour mettre à jour le HTML
+      html += `
       <article class="cart__item" data-id="${cartData[i]._id}" data-color="${cartData[i].color}">
         <div class="cart__item__img">
           <img src="${cartData[i].imageUrl}" alt="${cartData[i].altTxt}">
@@ -99,7 +122,7 @@ function renderCart() {
           <div class="cart__item__content__description">
             <h2>${cartData[i].name}</h2>
             <p>${cartData[i].color}</p>
-            <p>${cartData[i].price} €</p>
+            <p>${price} €</p>
           </div>
           <div class="cart__item__content__settings">
             <div class="cart__item__content__settings__quantity">
@@ -112,8 +135,11 @@ function renderCart() {
           </div>
         </div>
       </article>
-    `;
+      `;
+    }
   }
+  
+  
   itemsContainer.innerHTML = html; // Insérer le HTML dans la page
   calculateTotals(); // Calculer les totaux chaque fois que le panier est affiché
 }
