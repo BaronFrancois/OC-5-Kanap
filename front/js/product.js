@@ -64,11 +64,19 @@ fetch(`http://localhost:3000/api/products/${objectId}`)
         
         // Sauvegarder le panier mis à jour dans le stockage local
         cart.forEach((item) => {
-            if (item.quantity < 0) {
-                // On remet la quantité à 1 si elle est négative
-                item.quantity = 1;
+            if (item.quantity <= 0) {
+                // On supprime l'article si la quantité est négative
+                cart.splice(cart.indexOf(item), 1);
                 // message d'erreur
-                alert("La quantité ne peut pas être négative.");
+                alert("La quantité ne peut pas âtre négative.");
+                clear.localStorage(item)
+                return
+
+            }
+            if (!color) {
+                alert("Veuillez sélectionner une couleur.");
+                clear.localStorage(item)
+                return;
             }
         });
         localStorage.setItem('cart', JSON.stringify(cart))
